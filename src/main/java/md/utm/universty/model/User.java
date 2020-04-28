@@ -5,17 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-@AllArgsConstructor
 @Entity
-@NoArgsConstructor
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
@@ -27,8 +23,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    Set<Role> roles = new HashSet<>();
+    @Builder.Default
+    private UserRole userRole;
 
     @Builder.Default
     private Boolean locked = false;
@@ -46,9 +42,18 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt = new Date();
 
+    public User(String name, String surname, String email, String password, UserRole userRole) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.userRole = userRole;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        final SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(userRole.name());
+        return Collections.singletonList(simpleGrantedAuthority);
     }
 
     @Override

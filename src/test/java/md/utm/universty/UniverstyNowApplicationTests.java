@@ -8,6 +8,6 @@ class UniverstyNowApplicationTests {
 
 	@Test
 	void contextLoads() {
-	}
+ 	}
 
 }
