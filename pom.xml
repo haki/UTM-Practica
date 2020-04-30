@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>md.utm</groupId>
 	<artifactId>universty</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-Practica</version>
 	<packaging>war</packaging>
 	<name>Universty Now</name>
 	<description>Proiect pentru practica la UTM</description>
@@ -20,6 +20,18 @@
 	</properties>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>2.2.6.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

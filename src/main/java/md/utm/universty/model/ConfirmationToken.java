@@ -13,7 +13,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "confirmation_token")
 public class ConfirmationToken {
 
@@ -28,6 +27,10 @@ public class ConfirmationToken {
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
+
+    public ConfirmationToken() {
+
+    }
 
     public ConfirmationToken(User user) {
         this.user = user;

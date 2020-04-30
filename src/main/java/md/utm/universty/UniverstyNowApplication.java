@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import md.utm.universty.model.User;
 import md.utm.universty.model.UserRole;
 import md.utm.universty.repository.UserRepository;
+import md.utm.universty.service.UserService;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,31 +15,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
+import java.util.Optional;
 
 @AllArgsConstructor
 @SpringBootApplication
-public class UniverstyNowApplication {
-    private final UserRepository userRepository;
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+public class UniverstyNowApplication implements CommandLineRunner {
+    private final UserService userService;
 
     public static void main(String[] args) {
         SpringApplication.run(UniverstyNowApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner commandLineRunner() {
-        return new CommandLineRunner() {
-            @Override
-            public void run(String... args) throws Exception {
-                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-                String hashedPassword = bCryptPasswordEncoder.encode("123");
-                User user = new User("Hakan", "Meral", "hakanmeral99@gmail.com", hashedPassword, UserRole.Admin);
-                userRepository.save(user);
-            }
-        };
+    @Override
+    public void run(String... args) throws Exception {
+        Optional<User> optionalUser = userService.findUserByUserRole(UserRole.Admin);
+
+        if (optionalUser.isEmpty()) {
+            User user = new User("System", "Admin", "hakanmeral99@gmail.com", "admin", UserRole.Admin);
+            userService.signUpUser(user);
+        }
     }
 }

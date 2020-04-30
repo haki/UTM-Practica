@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         http.
                 authorizeRequests()
                 .antMatchers("/accounts/login").anonymous()
+                .antMatchers("/accounts/register/confirm").anonymous()
                 .anyRequest()
                 .authenticated()
                 .and().csrf().disable()
@@ -48,6 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**", "/static/**");
+        web.ignoring().antMatchers("/resources/**", "/static/**", "/assets/**", "/demo/**");
     }
 }
