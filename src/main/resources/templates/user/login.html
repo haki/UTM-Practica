@@ -22,13 +22,13 @@
                             <div class="form-group">
                                 <label class="form-label">
                                     Parola
-                                    <a href="./forgot-password.html" class="float-right small">Ai uitat parola?</a>
+                                    <a th:href="@{/accounts/password/reset}" class="float-right small">Ai uitat parola?</a>
                                 </label>
                                 <input type="password" class="form-control" placeholder="parola" required name="password">
                             </div>
                             <div class="form-group">
                                 <label class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" />
+                                    <input type="checkbox" class="custom-control-input" name="remember" />
                                     <span class="custom-control-label">Ține-mă minte</span>
                                 </label>
                             </div>

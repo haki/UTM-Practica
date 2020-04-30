@@ -51,7 +51,7 @@ public class UserService implements UserDetailsService {
         mailMessage.setTo(email);
         mailMessage.setSubject("Inregistrarea la UTM Now");
         mailMessage.setFrom("hakan.meral@isa.utm.md");
-        mailMessage.setText("Pentru continuarea apasati link-ul jos: \n\n" + "http:/localhost:8080/accounts/register/confirm?token=" + token);
+        mailMessage.setText("Va rugam sa urmati acest link pentru a confirma procedura de inregistrarea: \n\n" + "http:/localhost:8080/accounts/register/confirm?token=" + token);
 
         emailSenderService.sendEmail(mailMessage);
     }
@@ -65,6 +65,31 @@ public class UserService implements UserDetailsService {
 
         user.setEnabled(true);
         userRepository.save(user);
-        confirmationTokenService.deleteConfirmationToken(confirmationToken.getId()  );
+        confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
+    }
+
+    public void sendResetToken(User user) {
+        final ConfirmationToken confirmationToken = new ConfirmationToken(user);
+        final SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        confirmationTokenService.save(confirmationToken);
+
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setFrom("hakan.meral@isa.utm.md");
+        mailMessage.setSubject("Recuperare parola");
+        mailMessage.setText("Va rugam sa urmati acest link pentru a confirma procedura de recuperare a parolei dvs.:\n\n" + "http://localhost:8080/accounts/password/reset/confirm?token=" + confirmationToken.getConfirmationToken());
+
+        emailSenderService.sendEmail(mailMessage);
+    }
+
+    public void updatePassword(User user, ConfirmationToken token, String password) {
+        final String encryptedPassword = bCryptPasswordEncoder.encode(password);
+        user.setPassword(encryptedPassword);
+        userRepository.save(user);
+        confirmationTokenService.deleteConfirmationToken(token.getId());
     }
 }
