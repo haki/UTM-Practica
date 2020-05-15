@@ -1,0 +1,42 @@
+<th xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="head">
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Star Admin Premium Bootstrap Admin Dashboard Template</title>
+        <!-- plugins:css -->
+        <link rel="stylesheet" href="../../../assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+        <link rel="stylesheet" href="../../../assets/vendors/iconfonts/ionicons/css/ionicons.css">
+        <link rel="stylesheet" href="../../../assets/vendors/iconfonts/typicons/src/font/typicons.css">
+        <link rel="stylesheet" href="../../../assets/vendors/iconfonts/flag-icon-css/css/flag-icon.min.css">
+        <link rel="stylesheet" href="../../../assets/vendors/css/vendor.bundle.base.css">
+        <link rel="stylesheet" href="../../../assets/vendors/css/vendor.bundle.addons.css">
+        <!-- endinject -->
+        <!-- plugin css for this page -->
+        <!-- End plugin css for this page -->
+        <!-- inject:css -->
+        <link rel="stylesheet" href="../../../assets/css/shared/style.css">
+        <!-- endinject -->
+        <link rel="shortcut icon" href="../../../assets/images/favicon.png"/>
+    </th:block>
+
+    <th:block th:fragment="stateMessage">
+        <label class="alert alert-success" role="alert" th:if="${successMessage}" th:utext="${successMessage}"></label>
+        <label class="alert alert-danger" role="alert" th:if="${errorMessage}" th:utext="${errorMessage}"></label>
+    </th:block>
+
+    <th:block th:fragment="footer">
+        <p class="footer-text text-center">copyright © 2018 Bootstrapdash. All rights reserved.</p>
+    </th:block>
+
+    <th:block th:fragment="script">
+        <!-- plugins:js -->
+        <script src="../../../assets/vendors/js/vendor.bundle.base.js"></script>
+        <script src="../../../assets/vendors/js/vendor.bundle.addons.js"></script>
+        <!-- endinject -->
+        <!-- inject:js -->
+        <script src="../../../assets/js/shared/off-canvas.js"></script>
+        <script src="../../../assets/js/shared/misc.js"></script>
+        <!-- endinject -->
+    </th:block>
+</th>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <th th:insert="~{layout/auth :: head}"></th>
+
+</head>
+<body>
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+            <div class="row w-100">
+                <div class="col-lg-4 mx-auto">
+                    <div class="auto-form-wrapper">
+
+                        <th th:insert="~{layout/auth :: stateMessage}"></th>
+                        <form autocomplete="off" method="post" th:action="@{/accounts/register/confirm}" th:object="${registerConfirmForm}">
+                            <input type="hidden" name="token" th:value="${token}">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input required type="text" class="form-control" th:field="*{name}" placeholder="Prenume">
+                                    <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="mdi mdi-check-circle-outline"></i>
+                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input required type="text" class="form-control" th:field="*{surname}" placeholder="Nume">
+                                    <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="mdi mdi-check-circle-outline"></i>
+                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input required type="password" class="form-control" th:field="*{password}" placeholder="parola">
+                                    <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="mdi mdi-check-circle-outline"></i>
+                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary submit-btn btn-block">Register</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <th th:insert="~{layout/auth :: footer}"></th>
+
+                </div>
+            </div>
+        </div>
+        <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+
+<th th:insert="~{layout/auth :: script}"></th>
+
+</body>
+</html>

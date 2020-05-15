@@ -1,46 +1,81 @@
-<!doctype html>
-<html lang="en" dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="ro" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
 
-<th th:replace="~{layout/login-register :: head}"></th>
+    <th th:insert="~{layout/auth :: head}"></th>
 
-<body class="">
-<div class="page">
-    <div class="page-single">
-        <div class="container">
-            <div class="row">
-                <div class="col col-login mx-auto">
-                    <div class="text-center mb-6">
-                        <img th:src="@{/demo/brand/utm-logo.png}" class="h-9" alt="logo">
+</head>
+<body>
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+            <div class="row w-100">
+                <div class="col-lg-4 mx-auto">
+                    <div class="auto-form-wrapper">
+
+                        <label style="text-align: center" class="alert alert-success" role="alert"
+                               th:if="${(param.confirm != null) and (param.confirm[0] == 'true')}">
+                            Confirmarea a fost cu succes!
+                        </label>
+
+                        <label style="text-align: center" class="alert alert-danger" role="alert"
+                               th:if="${(param.error != null) and (param.error[0] == 'true')}">
+                            Email sau parola nu este corect, sau trebuie sa confirmati contul dvs.
+                        </label>
+
+                        <label style="text-align: center" class="alert alert-success" role="alert"
+                               th:if="${(param.reset != null) and (param.reset[0] == 'true')}">
+                            Parola a fost recuperat cu succes
+                        </label>
+
+                        <form method="post" th:action="@{/accounts/login}">
+                            <div class="form-group">
+                                <label class="label">E-mail</label>
+                                <div class="input-group">
+                                    <input required name="email" type="text" class="form-control" placeholder="prenume.nume@utm.md">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="mdi mdi-check-circle-outline"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Parola</label>
+                                <div class="input-group">
+                                    <input required name="password" type="password" class="form-control" placeholder="*********">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="mdi mdi-check-circle-outline"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary submit-btn btn-block">Conectează-te</button>
+                            </div>
+                            <div class="form-group d-flex justify-content-between">
+                                <div class="form-check form-check-flat mt-0">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="remember" class="form-check-input" checked=""> Ține-mă minte <i class="input-helper"></i></label>
+                                </div>
+                                <a th:href="@{/accounts/password/reset}" class="text-small forgot-password text-black">Ai uitat parola?</a>
+                            </div>
+                        </form>
                     </div>
-                    <form class="card" method="post" th:action="@{/accounts/login}">
-                        <div class="card-body p-6">
-                            <div class="card-title">Intră în cont</div>
-                            <div class="form-group">
-                                <label class="form-label">E-mail</label>
-                                <input type="email" required class="form-control" aria-describedby="emailHelp" placeholder="utm@utm.md" name="email">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">
-                                    Parola
-                                    <a th:href="@{/accounts/password/reset}" class="float-right small">Ai uitat parola?</a>
-                                </label>
-                                <input type="password" class="form-control" placeholder="parola" required name="password">
-                            </div>
-                            <div class="form-group">
-                                <label class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" name="remember" />
-                                    <span class="custom-control-label">Ține-mă minte</span>
-                                </label>
-                            </div>
-                            <div class="form-footer">
-                                <input type="submit" class="btn btn-primary btn-block" th:value="Conectează-te">
-                            </div>
-                        </div>
-                    </form>
+
+                    <th th:insert="~{layout/auth :: footer}"></th>
+
                 </div>
             </div>
         </div>
+        <!-- content-wrapper ends -->
     </div>
+    <!-- page-body-wrapper ends -->
 </div>
+<!-- container-scroller -->
+
+<th th:insert="~{layout/auth :: script}"></th>
+
 </body>
 </html>

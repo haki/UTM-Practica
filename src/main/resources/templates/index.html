@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th th:insert="~{layout/main :: head}"></th>
+</head>
+<body>
+<div class="container-scroller">
+
+    <th th:insert="~{layout/main :: navbar}"></th>
+
+    <div class="container-fluid page-body-wrapper">
+
+        <th th:insert="~{layout/main :: sidebar}"></th>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!-- Page Title Header Starts-->
+                <div class="row page-title-header">
+                    <div class="col-12">
+                        <div class="page-header">
+                            <h4 class="page-title">Dashboard</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12" th:if="${addUser}">
+                    <div class="page-header-toolbar">
+                        <div class="sort-wrapper">
+                            <a th:href="@{/accounts/add/user}" type="button" class="btn btn-primary toolbar-item">Add User</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+
+            <th th:insert="~{layout/main :: footer}"></th>
+
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+
+<th th:insert="~{layout/main :: scripts}"></th>
+
+</body>
+</html>

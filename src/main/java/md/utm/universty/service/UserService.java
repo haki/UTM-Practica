@@ -1,6 +1,8 @@
 package md.utm.universty.service;
 
 import lombok.AllArgsConstructor;
+import md.utm.universty.dto.PasswordResetDto;
+import md.utm.universty.dto.RegisterConfirmDto;
 import md.utm.universty.model.ConfirmationToken;
 import md.utm.universty.model.User;
 import md.utm.universty.model.UserRole;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.text.MessageFormat;
 import java.util.Optional;
 
@@ -36,9 +39,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void signUpUser(User user) {
-        final String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(encryptedPassword);
-        final User createdUser = userRepository.save(user);
+        userRepository.save(user);
         final ConfirmationToken confirmationToken = new ConfirmationToken(user);
 
         confirmationTokenService.save(confirmationToken);
@@ -60,9 +61,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByUserRole(userRole);
     }
 
-    public void confirmUser(ConfirmationToken confirmationToken) {
-        final User user = confirmationToken.getUser();
-
+    public void confirmUser(ConfirmationToken confirmationToken, RegisterConfirmDto form) {
+        User user = confirmationToken.getUser();
+        user.setName(form.getName());
+        user.setSurname(form.getSurname());
+        user.setPassword(bCryptPasswordEncoder.encode(form.getPassword()));
         user.setEnabled(true);
         userRepository.save(user);
         confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
@@ -73,9 +76,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void sendResetToken(User user) {
-        final ConfirmationToken confirmationToken = new ConfirmationToken(user);
         final SimpleMailMessage mailMessage = new SimpleMailMessage();
-
+        final ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenService.save(confirmationToken);
 
         mailMessage.setTo(user.getEmail());

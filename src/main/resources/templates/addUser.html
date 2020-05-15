@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th th:insert="~{layout/main :: head}"></th>
+</head>
+<body>
+<div class="container-scroller">
+
+    <th th:insert="~{layout/main :: navbar}"></th>
+
+    <div class="container-fluid page-body-wrapper">
+
+        <th th:insert="~{layout/main :: sidebar}"></th>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!-- Page Title Header Starts-->
+                <div class="row page-title-header">
+                    <div class="col-12">
+                        <div class="page-header">
+                            <h4 class="page-title">Dashboard</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Default form</h4>
+                            <p class="card-description"> Basic form layout </p>
+                            <form class="forms-sample" method="post" th:action="@{/accounts/add/user}" th:object="${sendRegisterMail}">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Email address</label>
+                                    <input required type="email" class="form-control" id="exampleInputEmail1" th:field="*{email}" placeholder="email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Large select</label>
+                                    <select th:field="*{userRole}" class="form-control form-control-lg" id="exampleFormControlSelect1">
+                                        <option th:if="${systemAdmin}" value="0">Admin</option>
+                                        <option th:if="${systemAdmin}" value="1">Profesor/Profesoara</option>
+                                        <option value="2">Student</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-success mr-2">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+
+            <th th:insert="~{layout/main :: footer}"></th>
+
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+
+<th th:insert="~{layout/main :: scripts}"></th>
+
+</body>
+</html>

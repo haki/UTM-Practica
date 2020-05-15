@@ -1,6 +1,7 @@
 package md.utm.universty.configure;
 
 import lombok.AllArgsConstructor;
+import md.utm.universty.model.UserRole;
 import md.utm.universty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 authorizeRequests()
                 .antMatchers("/accounts/login").anonymous()
                 .antMatchers("/accounts/register/confirm").anonymous()
-                .antMatchers("/accounts/password/reset/**").anonymous()
+                .antMatchers("/accounts/password/reset").anonymous()
+                .antMatchers("/accounts/password/reset/confirm").anonymous()
                 .anyRequest()
                 .authenticated()
                 .and().csrf().disable()
@@ -34,11 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .defaultSuccessUrl("/")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .and().rememberMe()
-                .key("rem-me-key")
-                .rememberMeParameter("remember")
-                .rememberMeCookieName("rememberLogin")
-                .tokenValiditySeconds(86400)
                 .and().logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/accounts/logout"))
                 .logoutSuccessUrl("/accounts/login?logout=true").and().exceptionHandling();
@@ -55,6 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**", "/static/**", "/assets/**", "/demo/**");
+        web.ignoring().antMatchers("/resources/**", "/static/**", "/assets/**");
     }
 }

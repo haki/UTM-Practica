@@ -23,4 +23,8 @@ public class ConfirmationTokenService {
     public void deleteConfirmationToken(Long id) {
         confirmationTokenRepository.deleteById(id);
     }
+
+    public Optional<ConfirmationToken> findConfirmationTokenByUser(Long id) {
+        return confirmationTokenRepository.findConfirmationTokenByUser(id);
+    }
 }

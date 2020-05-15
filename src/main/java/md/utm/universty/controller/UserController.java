@@ -3,10 +3,15 @@ package md.utm.universty.controller;
 import lombok.AllArgsConstructor;
 import md.utm.universty.dto.PasswordForgotDto;
 import md.utm.universty.dto.PasswordResetDto;
+import md.utm.universty.dto.RegisterConfirmDto;
+import md.utm.universty.dto.SendRegisterMail;
 import md.utm.universty.model.ConfirmationToken;
 import md.utm.universty.model.User;
+import md.utm.universty.model.UserRole;
 import md.utm.universty.service.ConfirmationTokenService;
 import md.utm.universty.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +31,7 @@ import java.util.Optional;
 public class UserController {
     private final ConfirmationTokenService confirmationTokenService;
     private final UserService userService;
+    private final HomeController homeController;
 
     @ModelAttribute("forgotPasswordForm")
     public PasswordForgotDto forgotPasswordDto() {
@@ -35,6 +41,16 @@ public class UserController {
     @ModelAttribute("passwordResetForm")
     public PasswordResetDto passwordReset() {
         return new PasswordResetDto();
+    }
+
+    @ModelAttribute("registerConfirmForm")
+    public RegisterConfirmDto registerConfirm() {
+        return new RegisterConfirmDto();
+    }
+
+    @ModelAttribute("sendRegisterMail")
+    public SendRegisterMail registerMail() {
+        return new SendRegisterMail();
     }
 
     @GetMapping("/accounts/login")
@@ -47,12 +63,44 @@ public class UserController {
     }
 
     @GetMapping("/accounts/register/confirm")
-    String confirmMail(@RequestParam("token") String token) {
+    ModelAndView confirmMail(@RequestParam("token") String token) {
+        ModelAndView modelAndView = new ModelAndView();
         Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findConfirmationTokenByToken(token);
+        ConfirmationToken confirmationToken = optionalConfirmationToken.get();
 
-        optionalConfirmationToken.ifPresent(userService::confirmUser);
+        if (optionalConfirmationToken.isPresent()) {
+            modelAndView.addObject("token", token);
+            modelAndView.setViewName("user/register");
+        } else {
+            modelAndView.setViewName("user/login");
+        }
 
-        return "redirect:/accounts/login?confirm=true";
+        return modelAndView;
+    }
+
+    @PostMapping("/accounts/register/confirm")
+    @Transactional
+    public String confirmAndSignUpUser(@ModelAttribute("registerConfirmForm") @Valid RegisterConfirmDto form, RedirectAttributes redirectAttributes, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute(BindingResult.class.getName() + ".registerConfirmForm", bindingResult);
+            redirectAttributes.addFlashAttribute("registerConfirmForm", form);
+
+            return "redirect:/accounts/login";
+        }
+
+        Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findConfirmationTokenByToken(form.getToken());
+        if (optionalConfirmationToken.isPresent()) {
+            ConfirmationToken confirmationToken = optionalConfirmationToken.get();
+            User user = confirmationToken.getUser();
+
+            userService.confirmUser(confirmationToken, form);
+
+            return "redirect:/accounts/login?confirm=true";
+        }
+
+        redirectAttributes.addFlashAttribute("errorMessage", "Token nu este exist");
+
+        return "redirect:/accounts/password/reset/confirm?token=" + form.getToken();
     }
 
     @GetMapping("/accounts/password/reset")
@@ -126,5 +174,55 @@ public class UserController {
         redirectAttributes.addFlashAttribute("errorMessage", "Token nu este exist");
 
         return "redirect:/accounts/password/reset/confirm?token=" + form.getToken();
+    }
+
+    @GetMapping("/accounts/add/user")
+    public ModelAndView userCreatingPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
+        User user = optionalUser.get();
+
+        if (user.getUserRole() == UserRole.Admin) {
+            modelAndView.addObject("user", user);
+            modelAndView.addObject("systemAdmin", true);
+            modelAndView.setViewName("addUser");
+        } else if (user.getUserRole() == UserRole.Professor) {
+            modelAndView.addObject("user", user);
+            modelAndView.addObject("systemAdmin", false);
+            modelAndView.setViewName("addUser");
+        } else {
+            return homeController.index();
+        }
+
+        return modelAndView;
+    }
+
+    @PostMapping("/accounts/add/user")
+    public ModelAndView sendRegistrationMail(@ModelAttribute("sendRegisterMailForm") SendRegisterMail form) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ModelAndView modelAndView = new ModelAndView();
+
+        Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
+        User user = optionalUser.get();
+
+        modelAndView.addObject("successMessage", "Success");
+        modelAndView.addObject("user", user);
+        modelAndView.setViewName("addUser");
+        if (form.getUserRole() == 0 && user.getUserRole() == UserRole.Admin) {
+            User newUser = new User(form.getEmail(), UserRole.Admin);
+            userService.signUpUser(newUser);
+        } else if (form.getUserRole() == 1 && user.getUserRole() == UserRole.Admin) {
+            User newUser = new User(form.getEmail(), UserRole.Professor);
+            userService.signUpUser(newUser);
+        } else if (form.getUserRole() == 2 && (user.getUserRole() == UserRole.Admin || user.getUserRole() == UserRole.Professor)) {
+            User newUser = new User(form.getEmail(), UserRole.Student);
+            userService.signUpUser(newUser);
+        } else {
+            modelAndView.setViewName("index");
+        }
+
+        return modelAndView;
     }
 }

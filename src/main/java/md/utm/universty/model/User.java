@@ -32,25 +32,22 @@ public class User implements UserDetails {
     @Builder.Default
     private Boolean enabled =false;
 
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt = new Date();
 
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
     private Date updatedAt = new Date();
+
+
 
     public User() {
 
     }
 
-    public User(String name, String surname, String email, String password, UserRole userRole) {
-        this.name = name;
-        this.surname = surname;
+    public User(String email, UserRole userRole) {
         this.email = email;
-        this.password = password;
         this.userRole = userRole;
     }
 
