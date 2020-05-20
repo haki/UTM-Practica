@@ -1,10 +1,7 @@
 package md.utm.universty.controller;
 
 import lombok.AllArgsConstructor;
-import md.utm.universty.dto.PasswordForgotDto;
-import md.utm.universty.dto.PasswordResetDto;
-import md.utm.universty.dto.RegisterConfirmDto;
-import md.utm.universty.dto.SendRegisterMail;
+import md.utm.universty.dto.*;
 import md.utm.universty.model.ConfirmationToken;
 import md.utm.universty.model.User;
 import md.utm.universty.model.UserRole;
@@ -13,7 +10,6 @@ import md.utm.universty.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -51,6 +47,11 @@ public class UserController {
     @ModelAttribute("sendRegisterMail")
     public SendRegisterMail registerMail() {
         return new SendRegisterMail();
+    }
+
+    @ModelAttribute("updateProfileForm")
+    public UpdateProfileDto updateProfile() {
+        return new UpdateProfileDto();
     }
 
     @GetMapping("/accounts/login")
@@ -184,14 +185,9 @@ public class UserController {
         Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
         User user = optionalUser.get();
 
-        if (user.getUserRole() == UserRole.Admin) {
+        if (user.getUserRole() == UserRole.Admin || user.getUserRole() == UserRole.Professor) {
             modelAndView.addObject("user", user);
-            modelAndView.addObject("systemAdmin", true);
-            modelAndView.setViewName("addUser");
-        } else if (user.getUserRole() == UserRole.Professor) {
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("systemAdmin", false);
-            modelAndView.setViewName("addUser");
+            modelAndView.setViewName("user/addUser");
         } else {
             return homeController.index();
         }
@@ -206,21 +202,103 @@ public class UserController {
 
         Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
         User user = optionalUser.get();
+        Optional<User> optionalnewUser = userService.findUserByEmail(form.getEmail());
+        Long reference = user.getId();
 
         modelAndView.addObject("successMessage", "Success");
         modelAndView.addObject("user", user);
-        modelAndView.setViewName("addUser");
-        if (form.getUserRole() == 0 && user.getUserRole() == UserRole.Admin) {
-            User newUser = new User(form.getEmail(), UserRole.Admin);
-            userService.signUpUser(newUser);
-        } else if (form.getUserRole() == 1 && user.getUserRole() == UserRole.Admin) {
-            User newUser = new User(form.getEmail(), UserRole.Professor);
-            userService.signUpUser(newUser);
-        } else if (form.getUserRole() == 2 && (user.getUserRole() == UserRole.Admin || user.getUserRole() == UserRole.Professor)) {
-            User newUser = new User(form.getEmail(), UserRole.Student);
-            userService.signUpUser(newUser);
+
+        modelAndView.setViewName("user/addUser");
+        if (optionalnewUser.isEmpty()) {
+            if (form.getUserRole() == 0 && user.getUserRole() == UserRole.Admin) {
+                User newUser = new User(form.getEmail(), UserRole.Admin, reference);
+                userService.signUpUser(newUser);
+            } else if (form.getUserRole() == 1 && user.getUserRole() == UserRole.Admin) {
+                User newUser = new User(form.getEmail(), UserRole.Professor, reference);
+                userService.signUpUser(newUser);
+            } else if (form.getUserRole() == 2 && (user.getUserRole() == UserRole.Admin || user.getUserRole() == UserRole.Professor)) {
+                User newUser = new User(form.getEmail(), UserRole.Student, reference);
+                userService.signUpUser(newUser);
+            }
         } else {
             modelAndView.setViewName("index");
+        }
+
+        return modelAndView;
+    }
+
+    @GetMapping("/accounts/list/user")
+    public ModelAndView listUsers() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ModelAndView modelAndView = new ModelAndView();
+        Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
+        User user = optionalUser.get();
+        modelAndView.addObject("user", user);
+
+        if (user.getUserRole() == UserRole.Admin || user.getUserRole() == UserRole.Professor) {
+            modelAndView.addObject("allUsers", userService.listAllUsers());
+            modelAndView.setViewName("user/listUser");
+        } else {
+            modelAndView.setViewName("index");
+        }
+
+        return modelAndView;
+    }
+
+    @GetMapping("/accounts/delete/user")
+    public String deleteUserbyId(@RequestParam("id") Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
+        User user = optionalUser.get();
+        Optional<User> optionalUser1 = userService.findUserById(id);
+
+        if (user.getUserRole() != UserRole.Student && user.getId() != id && optionalUser1.isPresent()) {
+            User deleteUser = optionalUser1.get();
+            if (user.getUserRole() == UserRole.Professor && user.getId() == deleteUser.getReference()) {
+                userService.deleteUserById(id);
+            } else if (user.getUserRole() == UserRole.Admin) {
+                userService.deleteUserById(id);
+            }
+
+            return "redirect:/accounts/list/user";
+        }
+        return "redirect:";
+    }
+
+    @GetMapping("/accounts/profile")
+    public ModelAndView userProfile(@RequestParam("id") Long id) {
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
+        User user = optionalUser.get();
+
+        if (user.getId() == id) {
+            modelAndView.addObject("user", user);
+            modelAndView.setViewName("user/profile");
+        } else {
+            modelAndView.addObject("user", user);
+            modelAndView.setViewName("index");
+        }
+
+        return modelAndView;
+    }
+
+    @PostMapping("/accounts/profile/update")
+    public ModelAndView updateProfile(@ModelAttribute("updateProfile") @Valid UpdateProfileDto form) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ModelAndView modelAndView = new ModelAndView();
+        Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
+        User user = optionalUser.get();
+
+        modelAndView.addObject("user", user);
+        modelAndView.setViewName("index");
+
+        Optional<User> optionalUser1 = userService.findUserByEmail(form.getEmail());
+        if (optionalUser1.isPresent()) {
+            User updateUser = optionalUser1.get();
+            if (user.getId() == updateUser.getId()) {
+                userService.updateUser(user, form);
+            }
         }
 
         return modelAndView;

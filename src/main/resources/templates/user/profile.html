@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th th:insert="~{layout/main :: head}"></th>
+</head>
+<body>
+<div class="container-scroller">
+
+    <th th:insert="~{layout/main :: navbar}"></th>
+
+    <div class="container-fluid page-body-wrapper">
+
+        <th th:insert="~{layout/main :: sidebar}"></th>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!-- Page Title Header Starts-->
+                <div class="row page-title-header">
+                    <div class="col-12">
+                        <div class="page-header">
+                            <h4 class="page-title">Contul meu</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 grid-margin">
+                        <div class="card">
+                            <div class="card-body">
+                                <form class="form-sample" method="post" th:action="@{/accounts/profile/update}"
+                                      th:object="${updateProfileForm}">
+                                    <p class="card-description"> Informatie personala </p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Prenume</label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="form-control" th:value="${user.getName()}"
+                                                           name="name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Nume</label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="form-control"
+                                                           th:value="${user.getSurname()}" name="surname">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <input type="hidden" class="form-control" th:value="${user.getEmail()}"
+                                               name="email">
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Parola</label>
+                                                <div class="col-sm-9">
+                                                    <input type="password" class="form-control" th:field="*{password}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success mr-2">Salvează</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+
+            <th th:insert="~{layout/main :: footer}"></th>
+
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+
+<th th:insert="~{layout/main :: scripts}"></th>
+
+</body>
+</html>

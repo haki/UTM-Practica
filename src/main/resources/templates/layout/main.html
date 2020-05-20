@@ -3,7 +3,7 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Star Admin Premium Bootstrap Admin Dashboard Template</title>
+        <title>Universty Now</title>
         <!-- plugins:css -->
         <link rel="stylesheet" th:href="@{/assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css}">
         <link rel="stylesheet" th:href="@{/assets/vendors/iconfonts/ionicons/css/ionicons.css}">
@@ -43,18 +43,18 @@
                             </div>
                             <span class="profile-text font-weight-medium d-none d-md-block">Moldoveneasca</span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-left navbar-dropdown py-2" aria-labelledby="LanguageDropdown">
+                        <!--div class="dropdown-menu dropdown-menu-left navbar-dropdown py-2" aria-labelledby="LanguageDropdown">
                             <a class="dropdown-item">
                                 <div class="flag-icon-holder">
                                     <i class="flag-icon flag-icon-us"></i>
                                 </div>English
                             </a>
-                        </div>
+                        </div-->
                     </li>
                 </ul>
                 <form class="ml-auto search-form d-none d-md-block" action="#">
                     <div class="form-group">
-                        <input type="search" class="form-control" placeholder="Search Here">
+                        <input disabled type="search" class="form-control" placeholder="Caută">
                     </div>
                 </form>
                 <ul class="navbar-nav ml-auto">
@@ -67,8 +67,8 @@
                                 <p class="mb-1 mt-3 font-weight-semibold" th:text="${user.getName() + ' ' + user.getSurname()}"></p>
                                 <p class="font-weight-light text-muted mb-0" th:text="${user.getEmail()}"></p>
                             </div>
-                            <a class="dropdown-item">My Profile<i class="dropdown-item-icon ti-dashboard"></i></a>
-                            <a class="dropdown-item" th:href="@{/accounts/logout}">Sign Out<i class="dropdown-item-icon ti-power-off"></i></a>
+                            <a class="dropdown-item" th:href="@{/accounts/profile(id=${user.getId()})}">Contul meu<i class="dropdown-item-icon ti-dashboard"></i></a>
+                            <a class="dropdown-item" th:href="@{/accounts/logout}">Delogare<i class="dropdown-item-icon ti-power-off"></i></a>
                         </div>
                     </li>
                 </ul>
@@ -96,13 +96,28 @@
                         </div>
                     </a>
                 </li>
-                <li class="nav-item nav-category">Main Menu</li>
+                <li class="nav-item nav-category">Meniu</li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/}">
                         <i class="menu-icon typcn typcn-document-text"></i>
-                        <span class="menu-title">Dashboard</span>
+                        <span class="menu-title">Pagina principală</span>
                     </a>
                 </li>
+                <th:block th:if="${user.getUserRole() == T(md.utm.universty.model.UserRole).Admin or user.getUserRole() == T(md.utm.universty.model.UserRole).Professor}">
+                    <li class="nav-item">
+                        <a th:href="@{/accounts/add/user}" class="nav-link">
+                            <i class="menu-icon typcn typcn-user-add"></i>
+                            <span class="menu-title">Adăugați utilizator</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/accounts/list/user}">
+                            <i class="menu-icon typcn typcn-th-list"></i>
+                            <span class="menu-title">Listă utilizatori</span>
+                        </a>
+                    </li>
+                </th:block>
             </ul>
         </nav>
         <!-- partial -->

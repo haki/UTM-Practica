@@ -31,7 +31,7 @@ public class UniverstyNowApplication implements CommandLineRunner {
         Optional<User> optionalUser = userService.findUserByUserRole(UserRole.Admin);
 
         if (optionalUser.isEmpty()) {
-            User user = new User("hakanmeral99@gmail.com", UserRole.Admin);
+            User user = new User("hakanmeral99@gmail.com", UserRole.Admin, null);
             userService.signUpUser(user);
         }
     }

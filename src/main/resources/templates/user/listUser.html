@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th th:insert="~{layout/main :: head}"></th>
+</head>
+<body>
+<div class="container-scroller">
+
+    <th th:insert="~{layout/main :: navbar}"></th>
+
+    <div class="container-fluid page-body-wrapper">
+
+        <th th:insert="~{layout/main :: sidebar}"></th>
+
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!-- Page Title Header Starts-->
+                <div class="row page-title-header">
+                    <div class="col-12">
+                        <div class="page-header">
+                            <h4 class="page-title">Listă utilizatori</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th> ID</th>
+                                        <th> Prenume</th>
+                                        <th> Nume</th>
+                                        <th> Rolul utilizatorului</th>
+                                        <th> E-mail</th>
+                                        <th> ID de referinta</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody th:if="${user.getUserRole() == T(md.utm.universty.model.UserRole).Admin}"
+                                           th:each="item : ${allUsers}">
+                                    <th:block
+                                            th:if="${item.getUserRole() == T(md.utm.universty.model.UserRole).Admin and user.getId() != item.getId()}">
+                                        <tr class="table-info">
+                                            <td th:text="${item.getId()}"></td>
+                                            <td th:text="${item.getName()}"></td>
+                                            <td th:text="${item.getSurname()}"></td>
+                                            <td th:text="${item.getUserRole()}"></td>
+                                            <td th:text="${item.getEmail()}"></td>
+                                            <td th:text="${item.getReference()}"></td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-danger"
+                                                   th:href="@{/accounts/delete/user(id=${item.getId()})}">Șterge</a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    <th:block
+                                            th:if="${item.getUserRole() == T(md.utm.universty.model.UserRole).Professor}">
+                                        <tr class="table-primary">
+                                            <td th:text="${item.getId()}"></td>
+                                            <td th:text="${item.getName()}"></td>
+                                            <td th:text="${item.getSurname()}"></td>
+                                            <td th:text="${item.getUserRole()}"></td>
+                                            <td th:text="${item.getEmail()}"></td>
+                                            <td th:text="${item.getReference()}"></td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-danger"
+                                                   th:href="@{/accounts/delete/user(id=${item.getId()})}">Șterge</a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    <th:block
+                                            th:if="${item.getUserRole() == T(md.utm.universty.model.UserRole).Student}">
+                                        <tr class="table-success">
+                                            <td th:text="${item.getId()}"></td>
+                                            <td th:text="${item.getName()}"></td>
+                                            <td th:text="${item.getSurname()}"></td>
+                                            <td th:text="${item.getUserRole()}"></td>
+                                            <td th:text="${item.getEmail()}"></td>
+                                            <td th:text="${item.getReference()}"></td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-danger"
+                                                   th:href="@{/accounts/delete/user(id=${item.getId()})}">Șterge</a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+
+                                    <tbody th:if="${user.getUserRole() == T(md.utm.universty.model.UserRole).Professor}"
+                                           th:each="item : ${allUsers}">
+                                    <th:block th:if="${user.getId() == item.getReference()}">
+                                        <tr class="table-success">
+                                            <td th:text="${item.getId()}"></td>
+                                            <td th:text="${item.getName()}"></td>
+                                            <td th:text="${item.getSurname()}"></td>
+                                            <td th:text="${item.getUserRole()}"></td>
+                                            <td th:text="${item.getEmail()}"></td>
+                                            <td th:text="${item.getReference()}"></td>
+                                            <td style="text-align: center">
+                                                <a class="btn btn-danger"
+                                                   th:href="@{/accounts/delete/user(id=${item.getId()})}">Șterge</a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+
+            <th th:insert="~{layout/main :: footer}"></th>
+
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+
+<th th:insert="~{layout/main :: scripts}"></th>
+
+</body>
+</html>

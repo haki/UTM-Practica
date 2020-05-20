@@ -20,8 +20,12 @@ public class User implements UserDetails {
 
     private String name;
     private String surname;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
+    private Long reference;
 
     @Builder.Default
     private UserRole userRole;
@@ -46,9 +50,10 @@ public class User implements UserDetails {
 
     }
 
-    public User(String email, UserRole userRole) {
+    public User(String email, UserRole userRole, Long reference) {
         this.email = email;
         this.userRole = userRole;
+        this.reference = reference;
     }
 
     @Override

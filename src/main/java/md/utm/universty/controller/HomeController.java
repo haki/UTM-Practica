@@ -28,12 +28,6 @@ public class HomeController {
         Optional<User> optionalUser = userService.findUserByEmail(authentication.getName());
         User user = optionalUser.get();
 
-        if (user.getUserRole() == UserRole.Admin || user.getUserRole() == UserRole.Professor) {
-            modelAndView.addObject("addUser", true);
-        } else {
-            modelAndView.addObject("addUser", false);
-        }
-
         modelAndView.addObject("user", user);
 
         modelAndView.setViewName("index");

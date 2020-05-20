@@ -1,8 +1,8 @@
 package md.utm.universty.service;
 
 import lombok.AllArgsConstructor;
-import md.utm.universty.dto.PasswordResetDto;
 import md.utm.universty.dto.RegisterConfirmDto;
+import md.utm.universty.dto.UpdateProfileDto;
 import md.utm.universty.model.ConfirmationToken;
 import md.utm.universty.model.User;
 import md.utm.universty.model.UserRole;
@@ -14,9 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -93,5 +92,28 @@ public class UserService implements UserDetailsService {
         user.setPassword(encryptedPassword);
         userRepository.save(user);
         confirmationTokenService.deleteConfirmationToken(token.getId());
+    }
+
+    public List<User> listAllUsers() {
+        return userRepository.findAllBy();
+    }
+
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public void updateUser(User user, UpdateProfileDto form) {
+        user.setName(form.getName());
+        user.setSurname(form.getSurname());
+        if (form.getPassword().length() > 4) {
+            final String password = bCryptPasswordEncoder.encode(form.getPassword());
+            user.setPassword(password);
+        }
+
+        userRepository.save(user);
     }
 }

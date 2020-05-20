@@ -18,7 +18,7 @@
                 <div class="row page-title-header">
                     <div class="col-12">
                         <div class="page-header">
-                            <h4 class="page-title">Dashboard</h4>
+                            <h4 class="page-title">Adăugați utilizator</h4>
                         </div>
                     </div>
                 </div>
@@ -26,22 +26,22 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Default form</h4>
-                            <p class="card-description"> Basic form layout </p>
                             <form class="forms-sample" method="post" th:action="@{/accounts/add/user}" th:object="${sendRegisterMail}">
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Email address</label>
+                                    <label for="exampleInputEmail1">E-mail</label>
                                     <input required type="email" class="form-control" id="exampleInputEmail1" th:field="*{email}" placeholder="email">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleFormControlSelect1">Large select</label>
+                                    <label for="exampleFormControlSelect1">Selectați rolul utilizatorului</label>
                                     <select th:field="*{userRole}" class="form-control form-control-lg" id="exampleFormControlSelect1">
-                                        <option th:if="${systemAdmin}" value="0">Admin</option>
-                                        <option th:if="${systemAdmin}" value="1">Profesor/Profesoara</option>
-                                        <option value="2">Student</option>
+                                        <th:block th:if="${user.getUserRole() == T(md.utm.universty.model.UserRole).Admin}">
+                                            <option value="0">Admin</option>
+                                            <option value="1">Profesor/Profesoara</option>
+                                        </th:block>
+                                        <option value="2">Student/Studenta</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-success mr-2">Submit</button>
+                                <button type="submit" class="btn btn-success mr-2">Adăugați</button>
                             </form>
                         </div>
                     </div>
